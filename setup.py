@@ -27,7 +27,7 @@ setuptools.setup(
         'pyyaml',
         'numpy',
         'pandas',
-        'parse-binary-file'
+        'parse-binary-file>=0.0.2'
     ],
     package_data = {
         'lifespec_fl': ['data/*']

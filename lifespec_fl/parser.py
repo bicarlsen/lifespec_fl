@@ -1,13 +1,33 @@
 import pkg_resources
 import struct
 import numpy as np
+import typing
 import yaml
 import parse_binary_file as pbf
 
 from .data_types import TimeScale
 
 
-def parse(file: str) -> tuple[np.ndarray, pbf.Data]:
+class FlParser(pbf.Parser):
+    def __init__(self):
+        desc = load_fl_description()
+        info = desc['info'] if ('info' in desc) else None
+        defaults = (
+            desc['default_options']
+            if ('default_options' in desc) else
+            None
+        )
+
+        format = pbf.FileFormat.from_dicts(
+            desc['fields'],
+            info=info,
+            defaults=defaults
+        )
+
+        super().__init__(format)
+
+
+def parse(file: str) -> typing.Tuple[np.ndarray, pbf.Data]:
     """
     Parse a .FL file.
 
@@ -17,10 +37,9 @@ def parse(file: str) -> tuple[np.ndarray, pbf.Data]:
         being the time bin and the second being the counts.
         `data` is the parse_binary_file.Data object representing the parsed file.
     """
-    desc = load_fl_description()
-    data = pbf.Data.from_dicts(desc['data'])
+    parser = FlParser()
     with open(file, 'rb') as f:
-        data.load(f)
+        data = parser.parse(f)
 
     data_buffer_head = data['data_buffer_head'].value
     if data_buffer_head == b'\x30':
@@ -41,7 +60,7 @@ def parse(file: str) -> tuple[np.ndarray, pbf.Data]:
         raise ValueError(f'Unknown data buffer head value {data_buffer_head:02X}')
 
     counts = data['data'].value[cnt_offset:]
-    field_size = pbf.data_types.DataSize.float.value
+    field_size = pbf.data_types.DataSize.FLOAT.value
     n_counts = len(counts)/ field_size
     if n_counts != int(n_counts):
         raise ValueError('Invalid data length.')
@@ -68,7 +87,7 @@ def parse(file: str) -> tuple[np.ndarray, pbf.Data]:
 
     # calculate times in seconds
     time_mult = TimeScale[time_scale].value
-    times = np.linspace(0, stop_time, num = n_counts)* time_mult
+    times = np.linspace(0, stop_time, num=n_counts) * time_mult
 
     counts = np.column_stack((times, np.array(counts)))
 

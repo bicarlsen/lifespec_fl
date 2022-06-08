@@ -1,8 +1,8 @@
 # Lifespec FL
 
-> python -m pip install lifespec_fl
-
 Parse `.FL` files from a Lifespec TRPL machine.
+
+> Install with `python -m pip install lifespec-fl`
 
 ## Parser
 The `lifespec_fl.parse(<file>)` method is used to parse a .FL file.
@@ -33,14 +33,20 @@ df = pd.Series(counts[:, 1], index = counts[:, 0])
 ```
 
 ### CLI
-Convert all .FL files to .csv in the current directory.
+Convert all .FL files in the current directory to .csv.
 ```bash
 lifespec_fl
+```
+
+Convert all .FL files ending in `trpl` in the current directly into a single .csv.
+```bash
+lifespec_fl --join *trpl.FL
 ```
 
 # File Format Notes
 + 3 lines separated by `\r\n` (`0d0a`)
 + Little Endian
++ `latin-1` encoded
 + Heads of lines 1 and 2 follow similar pattern
 
 ### Line 0 (0x00 - 0x14, 0x15 bytes)
@@ -92,7 +98,7 @@ lifespec_fl
 17. (0x02 bytes) `4090`, control sequence?
 18. (0x04 bytes) `0100 0000`, control sequence?
 19. (0x04 bytes) ?, null terminated
-20. (0x06 bytes) null
+20. (0x07 bytes) null
 21. (0x04 bytes) `f401 0000`, control sequence?
 22. (0x0c bytes) `'TCSPC Diode'` string, null terminated
 23. (0x0a bytes) null
@@ -100,25 +106,29 @@ lifespec_fl
 25. (0x02 bytes) null
 26. (0x03 bytes) `'HC'` string, null terminated
 27. (0x04 bytes) `f6ff ffff`, control sequence?
-28. (0x02 bytes)  ?, null temrinated
-29. (0x04 bytes) null
-30. (0x0c bytes) `'TCSPC Diode'` sting, null terminated
-31. (0x06 bytes) null
-32. (0x01 bytes) `fe`, control sequence?
-33. (0x04 bytes) `'K B'` string, null terminated
-34. (0x01 bytes) null
-35. (0x0a bytes) `'HS PMT920'` string, null terminated
-36. (0x05 bytes) `00c0 2344 00`, control sequence?
-37. (0x06 bytes) `f6ff ffff 0d00` control sequence?
-38. (0x03 bytes) null
-39. (0x0d bytes) `'200nm-1000nm'` string, null terminated
-40. (0x01 bytes) `05`, control sequence?
-41. (0x12 bytes) `'High Speed PMT920'` string, null terminated
-42. (0x21 bytes) `0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 002c 0100 0001 0000 00` control sequence?
-43. (0x03 bytes) ?
-44. (0x0d bytes) `'B...H. .C ...'`, `4200 0000 48c2 20b0 4320 0000 00`
-45. Time scale string (e.g. `'50ns'`, `'100ns'`), null terminated
-46. (0x01 bytes) Data padding
+28. (0x02 bytes) `1000`
+29. (0x03 bytes) null
+30. (0x02 bytes) `000c`
+31. (0x0c bytes) `'TCSPC Diode'` sting, null t2rminated
+32. (0x06 bytes) null
+33. (0x01 bytes) `fe`, control sequence?
+34. (0x04 bytes) `'K B'` string, null terminated
+35. (0x01 bytes) null
+36. (0x0a bytes) `'HS PMT920'` string, null terminated
+37. (0x05 bytes) ?, float
+38. (0x06 bytes) `00f6 ffff ff0d 00` control sequence?
+39. (0x03 bytes) null
+40. (0x0d bytes) `'200nm-1000nm'` string, null terminated
+41. (0x01 bytes) `05`, control sequence?
+42. (0x12 bytes) `'High Speed PMT920'` string, null terminated
+43. (0x02 bytes) `0001`
+44. (0x16 bytes) null
+45. `002c 0100 0001 0000 00` control sequence?
+46. (0x04 bytes) ?, float?
+47. (0x04 bytes) ?, float?
+48. (0x0d bytes) `c220 b043 2000 0000`
+49. Time scale string (e.g. `'50ns'`, `'100ns'`), null terminated
+50. (0x01 bytes) Data padding
     + If `30`, skip next byte
     + If `31`
         + If `2e39`, skip next byte

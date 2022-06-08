@@ -1,15 +1,17 @@
 # File description of .FL file
-byte_order: 'little'
+info:
+  byte_order: 'little'
+  encoding: 'latin-1'
 
-defaults:
-  str_encoding: 'utf-8'
+default_options:
+  str:
+    terminator: "\x00"
 
-data:
+fields:
   # line 0, header
   - type: 'str'
     name: 'header'
-    value: 'EAI Multiple Scans'
-    null_terminated: true
+    value: "EAI Multiple Scans\x00"
 
   - type: 'str'
     description: 'line break'
@@ -29,11 +31,9 @@ data:
 
   - name: 'x_axis'
     type: 'str'
-    null_terminated: true
 
   - type: 'str'
     name: 'time_scale'
-    null_terminated: true
 
   - is_null: true
     size: 4
@@ -43,10 +43,8 @@ data:
 
   - name: 'y_axis'
     type: 'str'
-    null_terminated: true
 
   - type: 'str'
-    null_terminated: true
     description: 'Possibly version number.'
 
   # body
@@ -55,7 +53,6 @@ data:
   - name: 'type'
     type: 'str'
     description: 'Scan type.'
-    null_terminated: true
 
   - type: 'str'
     value: "\r\n"
@@ -78,68 +75,53 @@ data:
 
   - name: 'x_axis'
     type: 'str'
-    null_terminated: true
 
   - type: 'str'
     name: 'time_scale'
-    null_terminated: true
 
   - size: 8
     is_null: true
 
   - name: 'y_axis'
     type: 'str'
-    null_terminated: true
 
   - type: 'str'
-    null_terminated: true
     description: 'Possibly version number.'
 
   # body
   - type: 'str'
     name: 'labels'
-    null_terminated: true
 
   - value: "\x2c"
-
   - value: "\x01\x00\x00\x00"
-
   - value: "\x04\x00"
 
-  - size: 2
-    is_null: 2
-
-  - size: 16
-
-  - value: "\x40\x90"
+  - terminator: "\x40\x90"
+    description: 'Unknown field'
 
   - value: "\x01\x00\x00\x00"
 
   - size: 4
-    null_terminated: true
 
-  - size: 6
+  - size: 7
     is_null: true
 
   - value: "\xf4\x01\x00\x00"
 
   - type: 'str'
-    value: 'TCSPC Diode'
-    null_terminated: true
+    value: "TCSPC Diode\x00"
 
   - size: 11
     is_null: true
 
   - type: 'str'
-    value: 'Reference'
-    null_terminated: true
+    value: "Reference\x00"
 
   - size: 2
     is_null: true
 
   - type: 'str'
-    value: 'HC'
-    null_terminated: true
+    value: "HC\x00"
 
   - value: "\xf6\xff\xff\xff"
   - value: "\x10\x00"
@@ -150,8 +132,7 @@ data:
   - value: "\x00\x0c"
 
   - type: 'str'
-    value: 'TCSPC Diode'
-    null_terminated: true
+    value: "TCSPC Diode\x00"
 
   - size: 5
     is_null: true
@@ -159,32 +140,29 @@ data:
   - value: "\x00\xfe"
 
   - type: 'str'
-    value: 'K B'
-    null_terminated: true
+    value: "K B\x00"
 
   - size: 1
     is_null: true
 
   - type: 'str'
-    value: 'HS PMT920'
-    null_terminated: true
+    value: "HS PMT920\x00"
 
-  - value: "\x00\xc0\x23\x44\x00"
+  - type: 'float'
+    description: 'Unknown field'
 
-  - value: "\xf6\xff\xff\xff\x0d\x00"
+  - value: "\x00\xf6\xff\xff\xff\x0d\x00"
 
   - size: 3
     is_null: true
 
   - type: 'str'
-    name: 'wavesize_range'
-    null_terminated: true
+    name: 'wavelength_range'
 
   - value: "\x05"
 
   - type: 'str'
     name: 'detector'
-    null_terminated: true
 
   - value: "\x00\x01"
 
@@ -193,13 +171,16 @@ data:
 
   - value: "\x00\x2c\x01\x00\x00\x01\x00\x00\x00"
       
-  - size: 3
+  - type: 'float'
+    description: 'Unknown field'
 
-  - value: "\x42\x00\x00\x00\x48\xc2\x20\xb0\x43\x20\x00\x00\x00"
+  - type: 'float'
+    description: 'Unknown field'
+
+  - value: "\xc2\x20\xb0\x43\x20\x00\x00\x00"
 
   - type: 'str'
     name: 'time_scale_string'
-    null_terminated: true
 
   - size: 1
     name: 'data_buffer_head'
