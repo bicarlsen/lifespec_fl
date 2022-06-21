@@ -97,7 +97,7 @@ def parse(file: str) -> typing.Tuple[np.ndarray, pbf.Data]:
 def load_fl_description() -> dict:
     """
     Returns a dictionary describing the .FL file format
-    for us with the `parse_binary_file` package.
+    for use with the `parse_binary_file` package.
 
     :returns dict:
     """

@@ -76,8 +76,11 @@ def main():
             df.to_csv(f'{fn}.csv', header = False, mode = 'a')
 
         elif args.join:
-            df = df.rename(fn)
             df = df.reset_index()
+            df.columns = pd.MultiIndex.from_tuples([
+                (fn, head) for head in df.columns
+            ], names=('sample', 'index'))
+            
             jdf.append(df)
 
         else:
@@ -85,7 +88,10 @@ def main():
 
     if args.join:
         logging.info('Joining data')
-        df = pd.concat(jdf, axis = 1)
+        df = pd.concat(jdf, axis = 1).sort_index(
+            axis=1, level='sample', sort_remaining=False
+        )
+        
         fn = get_new_join_fn()
         df.to_csv( fn, index = False)
 
