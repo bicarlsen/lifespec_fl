@@ -54,14 +54,25 @@ def parse(file: str) -> typing.Tuple[np.ndarray, pbf.Data]:
             cnt_offset = 4
 
         else:
-            raise ValueError(f'Unknown data buffer value {data_buffer:02X}')
+            val_str = data_buffer.hex()
+            raise ValueError(f'Unknown data buffer value 0x{val_str}')
+
+    elif data_buffer_head == b'\x36':
+        data_buffer = data['data'].value[:3]
+        if data_buffer == b'\x31\x2e\x30':
+            cnt_offset = 4
+
+        else:
+            val_str = data_buffer.hex()
+            raise ValueError(f'Unknown data buffer value 0x{val_str}')
 
     else:
-        raise ValueError(f'Unknown data buffer head value {data_buffer_head:02X}')
+        val_str = data_buffer_head.hex()
+        raise ValueError(f'Unknown data buffer head value 0x{val_str}')
 
     counts = data['data'].value[cnt_offset:]
     field_size = pbf.data_types.DataSize.FLOAT.value
-    n_counts = len(counts)/ field_size
+    n_counts = len(counts) / field_size
     if n_counts != int(n_counts):
         raise ValueError('Invalid data length.')
 

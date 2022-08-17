@@ -193,4 +193,4 @@ fields:
 
   - name: 'data'
     size: -1
-    description: 'data. May contiain header info. See `data_buffer_head` for info.'
+    description: 'Data. May contain header info. See `data_buffer_head` for info.'
